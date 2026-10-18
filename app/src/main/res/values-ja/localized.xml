@@ -538,4 +538,9 @@
     <string name="ce_name_secret_mission">シークレット・ミッション</string>
     <string name="ce_name_the_chaldean">カルデアの者</string>
     <string name="ce_name_wings_of_manuscript">手稿の翼</string>
+    <string name="p_should_use_teapots">青銅・星見のティーポットを使用</string>
+    <string name="p_should_use_teapots_summary">この戦闘設定で自動アイテム使用（ティーポット・ストームポッド）を設定します。</string>
+    <string name="p_limit_teapots">ティーポット制限</string>
+    <string name="battle_config_list_import_compat">"インポート (互換モード)"</string>
+    <string name="battle_config_list_import_compat_success">"%1$d 個の設定をインポートしました (互換モード)"</string>
 </resources>

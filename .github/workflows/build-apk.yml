@@ -38,6 +38,9 @@ jobs:
           distribution: ${{ env.JAVA_DISTRO }}
           cache: 'gradle'
 
+      - name: Run unit tests
+        run: ./gradlew test --no-daemon
+
       - name: Build Android Package
         run: ./gradlew assembleCi --parallel --no-daemon
 

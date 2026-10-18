@@ -82,7 +82,7 @@ class BattleConfigListViewModel @Inject constructor(
         return prefs.addBattleConfig(guid)
     }
 
-    data class ImportExportResult(val failureCount: Int)
+    data class ImportExportResult(val failureCount: Int, val successCount: Int = 0)
 
     private suspend fun exportAsync(dirUri: Uri, context: Context): ImportExportResult {
         var failed = 0
@@ -127,8 +127,13 @@ class BattleConfigListViewModel @Inject constructor(
         }
     }
 
-    private suspend fun importAsync(uris: List<Uri>, context: Context): ImportExportResult {
+    private suspend fun importAsync(
+        uris: List<Uri>,
+        context: Context,
+        compatMode: Boolean = false
+    ): ImportExportResult {
         var failed = 0
+        var success = 0
 
         withContext(Dispatchers.IO) {
             uris.forEach { uri ->
@@ -140,7 +145,15 @@ class BattleConfigListViewModel @Inject constructor(
                     }
 
                     if (json != null) {
-                        newConfig().import(BattleConfigFile.decode(json))
+                        val decoded = if (compatMode) {
+                            BattleConfigFile.decodeCompat(json)
+                        } else {
+                            BattleConfigFile.decode(json)
+                        }
+                        newConfig().import(decoded)
+                        ++success
+                    } else {
+                        ++failed
                     }
                 } catch (e: Exception) {
                     ++failed
@@ -149,15 +162,19 @@ class BattleConfigListViewModel @Inject constructor(
             }
         }
 
-        return ImportExportResult(failed)
+        return ImportExportResult(failed, success)
     }
 
-    fun importBattleConfigs(context: Context, uris: List<Uri>) {
+    fun importBattleConfigs(context: Context, uris: List<Uri>, compatMode: Boolean = false) {
         viewModelScope.launch {
-            val result = importAsync(uris, context)
+            val result = importAsync(uris, context, compatMode)
 
             if (result.failureCount > 0) {
                 val msg = context.getString(R.string.battle_config_list_import_failed, result.failureCount)
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT)
+                    .show()
+            } else if (result.successCount > 0 && compatMode) {
+                val msg = context.getString(R.string.battle_config_list_import_compat_success, result.successCount)
                 Toast.makeText(context, msg, Toast.LENGTH_SHORT)
                     .show()
             }

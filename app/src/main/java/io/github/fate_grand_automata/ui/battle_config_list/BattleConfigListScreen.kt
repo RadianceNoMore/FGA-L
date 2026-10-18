@@ -68,7 +68,13 @@ fun BattleConfigListScreen(
     val battleConfigImport = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenMultipleDocuments()
     ) { uris ->
-        vm.importBattleConfigs(context, uris)
+        vm.importBattleConfigs(context, uris, compatMode = false)
+    }
+
+    val battleConfigImportCompat = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenMultipleDocuments()
+    ) { uris ->
+        vm.importBattleConfigs(context, uris, compatMode = true)
     }
 
     val deleteConfirmDialog = FgaDialog()
@@ -100,8 +106,11 @@ fun BattleConfigListScreen(
 
                 BattleConfigListAction.Export -> battleConfigsExport.launch(Uri.EMPTY)
                 BattleConfigListAction.Import -> battleConfigImport.launch(
-                    //octet-stream as backup in case Android doesn't detect json
-                    arrayOf("application/json", "application/octet-stream")
+                    //octet-stream and wildcard as backup in case Android doesn't detect json
+                    arrayOf("application/json", "application/octet-stream", "*/*")
+                )
+                BattleConfigListAction.ImportCompat -> battleConfigImportCompat.launch(
+                    arrayOf("application/json", "application/octet-stream", "*/*")
                 )
 
                 is BattleConfigListAction.ToggleSelected -> vm.toggleSelected(it.id)
@@ -114,6 +123,7 @@ fun BattleConfigListScreen(
 private sealed class BattleConfigListAction {
     object Export : BattleConfigListAction()
     object Import : BattleConfigListAction()
+    object ImportCompat : BattleConfigListAction()
     object Delete : BattleConfigListAction()
     object AddNew : BattleConfigListAction()
     class ToggleSelected(val id: String) : BattleConfigListAction()
@@ -161,10 +171,20 @@ private fun BattleConfigListContent(
                                 icon = icon(Icons.Default.Delete)
                             )
                         } else {
-                            HeadingButton(
-                                text = stringResource(R.string.battle_config_list_import),
-                                onClick = { action(BattleConfigListAction.Import) }
-                            )
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                HeadingButton(
+                                    text = stringResource(R.string.battle_config_list_import),
+                                    onClick = { action(BattleConfigListAction.Import) }
+                                )
+
+                                HeadingButton(
+                                    text = stringResource(R.string.battle_config_list_import_compat),
+                                    onClick = { action(BattleConfigListAction.ImportCompat) }
+                                )
+                            }
                         }
                     }
                 }

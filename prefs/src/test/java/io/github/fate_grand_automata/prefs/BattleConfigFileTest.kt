@@ -68,4 +68,47 @@ class BattleConfigFileTest {
             BattleConfigFile.decode("not a battle config")
         }
     }
+
+    @Test
+    fun `compat export with quoted teapots booleans and ints coerces properly`() {
+        val json = """
+            {
+                "autoskill_name": "3T_NoSwap",
+                "should_use_teapots": "false",
+                "limit_teapots": "2",
+                "autoskill_party": "1",
+                "auto_skill_rearrange_cards": "false"
+            }
+        """.trimIndent()
+
+        val decoded = BattleConfigFile.decodeCompat(json)
+        assertThat(decoded["autoskill_name"]).isEqualTo("3T_NoSwap")
+        assertThat(decoded["should_use_teapots"]).isEqualTo(false)
+        assertThat(decoded["limit_teapots"]).isEqualTo(2)
+        assertThat(decoded["autoskill_party"]).isEqualTo("1")
+        assertThat(decoded["auto_skill_rearrange_cards"]).isEqualTo("F")
+    }
+
+    @Test
+    fun `compat export with t separator in card priority and servant priority normalizes to newline and comma`() {
+        val json = """
+            {
+                "autoskill_name": "HOPEWILLCAMELOT",
+                "card_priority": "WAC, WQC[t]WAC, WQC",
+                "servant_priority": "3,1,2,4,5,6[t]1,3,2,4,5,6",
+                "auto_skill_brave_chains": "WithNP[t]WithNP",
+                "auto_skill_rearrange_cards": "false[t]false",
+                "grand_servant": "TARGET_ABOVE_LEVEL_100",
+                "support_pref_ce_list_slot3": ["Chaldea Teatime"]
+            }
+        """.trimIndent()
+
+        val decoded = BattleConfigFile.decode(json)
+        assertThat(decoded["card_priority"]).isEqualTo("WAC, WQC\nWAC, WQC")
+        assertThat(decoded["servant_priority"]).isEqualTo("3,1,2,4,5,6\n1,3,2,4,5,6")
+        assertThat(decoded["auto_skill_brave_chains"]).isEqualTo("WithNP,WithNP")
+        assertThat(decoded["auto_skill_rearrange_cards"]).isEqualTo("F,F")
+        assertThat(decoded["support_grand_servant"]).isEqualTo(true)
+        assertThat(decoded["support_pref_ce_list"] as Collection<*>).containsOnly("Chaldea Teatime")
+    }
 }

@@ -595,4 +595,6 @@ After pressing on the button, switch the app filter from \"Not optimized\" to \"
     <string name="p_should_use_teapots">Use Stargazer\'s Teapots</string>
     <string name="p_should_use_teapots_summary">Automatically toggles Stargazer\'s Teapots (or Auto Item Use popup) for this battle config.</string>
     <string name="p_limit_teapots">Limit Teapots</string>
+    <string name="battle_config_list_import_compat">"Import (compat mode)"</string>
+    <string name="battle_config_list_import_compat_success">"Imported %1$d config(s) (compat mode)"</string>
 </resources>

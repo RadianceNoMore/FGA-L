@@ -516,4 +516,9 @@
     <string name="ce_name_secret_mission">"秘密任务"</string>
     <string name="ce_name_the_chaldean">迦勒底之人</string>
     <string name="ce_name_wings_of_manuscript">"手稿之翼"</string>
+    <string name="p_should_use_teapots">使用观星茶壶</string>
+    <string name="p_should_use_teapots_summary">在此队伍配置中自动使用道具（茶壶、风暴舱）。</string>
+    <string name="p_limit_teapots">茶壶数量限制</string>
+    <string name="battle_config_list_import_compat">"导入 (兼容模式)"</string>
+    <string name="battle_config_list_import_compat_success">"成功导入 %1$d 个脚本 (兼容模式)"</string>
 </resources>
