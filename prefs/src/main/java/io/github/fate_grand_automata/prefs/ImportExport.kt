@@ -98,6 +98,14 @@ object BattleConfigFile {
         if (map["should_use_teapots"] is String || map["limit_teapots"] is String) {
             return true
         }
+        val cmd = map["autoskill_cmd"]
+        if (cmd is String && cmd.any { it.isWhitespace() }) {
+            return true
+        }
+        val cp = map["card_priority"]
+        if (cp is String && (cp.contains("[t]") || cp.contains("C"))) {
+            return true
+        }
         return map.values.any { it is String && it.contains("[t]") }
     }
 
@@ -107,7 +115,12 @@ object BattleConfigFile {
         for ((key, rawVal) in raw) {
             var v: Any = rawVal
 
-            // 1. Handle wave separator [t] in string values
+            // 1. Handle autoskill_cmd whitespace stripping
+            if (key == "autoskill_cmd" && v is String) {
+                v = v.filter { !it.isWhitespace() }
+            }
+
+            // 2. Handle wave separator [t] in string values
             if (v is String && v.contains("[t]")) {
                 v = when (key) {
                     "card_priority", "servant_priority" -> v.replace("[t]", "\n")
@@ -118,6 +131,33 @@ object BattleConfigFile {
                         }
                     }
                     else -> v.replace("[t]", ",")
+                }
+            }
+
+            // 3. Handle card_priority: normalize crit cards (WAC, WBC, AC, etc.) to 9 standard cards
+            if (key == "card_priority" && v is String) {
+                val waves = if (v.contains("[t]")) v.split("[t]") else v.split("\n")
+                val standardCards = listOf("WB", "WA", "WQ", "B", "A", "Q", "RB", "RA", "RQ")
+                val standardCardSet = standardCards.toSet()
+
+                v = waves.joinToString("\n") { wave ->
+                    val tokens = wave.split(",").map { it.trim().uppercase() }.filter { it.isNotEmpty() }
+                    val cleanedTokens = mutableListOf<String>()
+                    for (token in tokens) {
+                        var base = token
+                        if (base.length > 1 && base.endsWith("C") && base != "RC") {
+                            base = base.dropLast(1)
+                        }
+                        if (base in standardCardSet && base !in cleanedTokens) {
+                            cleanedTokens.add(base)
+                        }
+                    }
+                    for (sc in standardCards) {
+                        if (sc !in cleanedTokens) {
+                            cleanedTokens.add(sc)
+                        }
+                    }
+                    cleanedTokens.take(9).joinToString(", ")
                 }
             }
 

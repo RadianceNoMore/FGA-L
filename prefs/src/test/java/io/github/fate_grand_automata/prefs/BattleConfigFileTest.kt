@@ -94,7 +94,8 @@ class BattleConfigFileTest {
         val json = """
             {
                 "autoskill_name": "HOPEWILLCAMELOT",
-                "card_priority": "WAC, WQC[t]WAC, WQC",
+                "autoskill_cmd": "i2 c2 d b2 h2 l2 g 645,\na 645,\nf e2 645,#,\na 645,\nf e2 645,#,\nf e2 645",
+                "card_priority": "WAC, WQC, WBC, WA, WQ, WB, BC, AC, QC, A, B, Q, RA, RB, RQ[t]WAC, WQC, WBC, WA, WQ, WB, BC, AC, QC, A, B, Q, RA, RB, RQ",
                 "servant_priority": "3,1,2,4,5,6[t]1,3,2,4,5,6",
                 "auto_skill_brave_chains": "WithNP[t]WithNP",
                 "auto_skill_rearrange_cards": "false[t]false",
@@ -104,7 +105,8 @@ class BattleConfigFileTest {
         """.trimIndent()
 
         val decoded = BattleConfigFile.decode(json)
-        assertThat(decoded["card_priority"]).isEqualTo("WAC, WQC\nWAC, WQC")
+        assertThat(decoded["autoskill_cmd"]).isEqualTo("i2c2db2h2l2g645,a645,fe2645,#,a645,fe2645,#,fe2645")
+        assertThat(decoded["card_priority"]).isEqualTo("WA, WQ, WB, B, A, Q, RA, RB, RQ\nWA, WQ, WB, B, A, Q, RA, RB, RQ")
         assertThat(decoded["servant_priority"]).isEqualTo("3,1,2,4,5,6\n1,3,2,4,5,6")
         assertThat(decoded["auto_skill_brave_chains"]).isEqualTo("WithNP,WithNP")
         assertThat(decoded["auto_skill_rearrange_cards"]).isEqualTo("F,F")

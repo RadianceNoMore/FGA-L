@@ -191,7 +191,8 @@ class AutoSkillCommand private constructor(
         }
 
         fun parse(command: String): AutoSkillCommand {
-            val waves = command
+            val cleaned = command.filter { !it.isWhitespace() }
+            val waves = cleaned
                 .split(WaveTurn.Wave.code)
 
             val commandTable = waves
