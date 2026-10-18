@@ -13,7 +13,7 @@ class Support @Inject constructor(
     private val supportPrefs: ISupportPreferences
 ) {
     companion object {
-        const val supportRegionToolSimilarity = 0.75
+        const val supportRegionToolSimilarity = 0.68
     }
 
     fun selectSupport(selectionMode: SupportSelectionModeEnum = supportPrefs.selectionMode) {

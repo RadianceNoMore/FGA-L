@@ -325,7 +325,9 @@ class ScriptManager @Inject constructor(
 
         preferences.gameServer =
             if (server == PrefsCore.GAME_SERVER_AUTO_DETECT)
-                (TapperService.instance?.detectedFgoServer ?: GameServers.default).also {
+                (TapperService.instance?.detectedFgoServer
+                    ?: preferences.selectedBattleConfig.server
+                    ?: GameServers.default).also {
                     Timber.d("Using auto-detected Game Server: $it")
                 }
             else try {

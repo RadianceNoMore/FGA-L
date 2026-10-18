@@ -2,6 +2,7 @@ package io.github.fate_grand_automata.imaging
 
 import android.graphics.Bitmap
 import io.github.lib_automata.Match
+import io.github.lib_automata.MultiPattern
 import io.github.lib_automata.Pattern
 import io.github.lib_automata.Region
 import io.github.lib_automata.Size
@@ -93,7 +94,23 @@ class DroidCvPattern(
         return null  
     }
 
-    override fun findMatches(template: Pattern, similarity: Double) = sequence {
+    override fun findMatches(template: Pattern, similarity: Double): Sequence<Match> = sequence {
+        if (template is MultiPattern) {
+            val seen = mutableListOf<Region>()
+            for (p in template.patterns) {
+                for (m in findMatches(p, similarity)) {
+                    val isDuplicate = seen.any {
+                        kotlin.math.abs(it.x - m.region.x) < 15 && kotlin.math.abs(it.y - m.region.y) < 15
+                    }
+                    if (!isDuplicate) {
+                        seen.add(m.region)
+                        yield(m)
+                    }
+                }
+            }
+            return@sequence
+        }
+
         val result = match(template)
 
         result?.use {

@@ -13,6 +13,7 @@ import io.github.fate_grand_automata.scripts.enums.GameServers
 import io.github.fate_grand_automata.scripts.enums.MaterialEnum
 import io.github.fate_grand_automata.scripts.prefs.IPreferences
 import io.github.lib_automata.ColorManager
+import io.github.lib_automata.MultiPattern
 import io.github.lib_automata.Pattern
 import org.opencv.android.Utils
 import org.opencv.imgcodecs.Imgcodecs
@@ -24,11 +25,30 @@ class ImageLoader @Inject constructor(
     @param:ApplicationContext val context: Context,
     private val colorManager: ColorManager
 ) : IImageLoader {
+    private val jpAssets by lazy { context.assets.list("Jp")?.toSet() ?: emptySet() }
+    private val enAssets by lazy { context.assets.list("En")?.toSet() ?: emptySet() }
+
     private fun createPattern(gameServer: GameServer, FileName: String): Pattern {
         val gameServerPath = gameServer.simple
         val filePath = "$gameServerPath/$FileName"
 
         val assets = context.assets
+
+        // Hybrid mode for JP: accept both JP and EN wording while following JP structure
+        if (gameServer is GameServer.Jp) {
+            val inJp = jpAssets.contains(FileName)
+            val inEn = enAssets.contains(FileName)
+
+            if (inJp && inEn) {
+                val jpPattern = assets.open("Jp/$FileName").use {
+                    DroidCvPattern(it, colorManager.isColor, "Jp/$FileName")
+                }
+                val enPattern = assets.open("En/$FileName").use {
+                    DroidCvPattern(it, colorManager.isColor, "En/$FileName")
+                }
+                return MultiPattern(listOf(jpPattern, enPattern), tag = "Hybrid(Jp+En)/$FileName")
+            }
+        }
 
         // load image from En by default or from current game server if a custom image exists
         val gameServerWithImage = if (assets.list(gameServerPath)?.contains(FileName) == true) {

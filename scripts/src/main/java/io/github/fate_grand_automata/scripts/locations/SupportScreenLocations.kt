@@ -58,7 +58,7 @@ class SupportScreenLocations @Inject constructor(
     val maxAscendedRegion = Region(270, 0, 40, 170) + supportOffset
     val limitBreakRegion = Region(270, 0, 40, 90) + supportOffset
 
-    val confirmSetupButtonRegion = Region(2006, 0, 370, 1440) + supportOffset
+    val confirmSetupButtonRegion = Region(1950, 0, 520, 1440) + supportOffset
     val defaultBounds = Region(-18, 0, 2356, 428) + supportOffset
     val defaultCeBounds = Region(-18, 270, 378, 150) + supportOffset
     val notFoundRegion = Region(-140, 850, 280, 86).xFromCenter()

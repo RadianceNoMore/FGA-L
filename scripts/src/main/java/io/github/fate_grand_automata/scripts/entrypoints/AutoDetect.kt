@@ -27,7 +27,10 @@ class AutoDetect @Inject constructor(
             listOf(images[Images.GoldXP], images[Images.SilverXP], images[Images.Gold5StarXP]) in emberSearchRegion ->
                 ScriptModeEnum.PresentBox
 
-            locations.support.confirmSetupButtonRegion.exists(images[Images.SupportConfirmSetupButton], similarity = 0.75) ->
+            locations.support.confirmSetupButtonRegion.exists(
+                images[Images.SupportConfirmSetupButton],
+                similarity = io.github.fate_grand_automata.scripts.modules.Support.supportRegionToolSimilarity
+            ) ->
                 ScriptModeEnum.SupportImageMaker
 
             mapOf(
