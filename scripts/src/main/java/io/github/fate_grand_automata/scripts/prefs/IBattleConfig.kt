@@ -31,6 +31,9 @@ interface IBattleConfig {
     val addRaidTurnDelay: Boolean
     val raidTurnDelaySeconds : Int
 
+    var shouldUseTeapots: Boolean
+    var limitTeapots: Int
+
     fun export(): Map<String, *>
 
     fun import(map: Map<String, *>)

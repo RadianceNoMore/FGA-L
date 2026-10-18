@@ -592,4 +592,7 @@ After pressing on the button, switch the app filter from \"Not optimized\" to \"
     <string name="ce_name_sword_saints_of_wandering">Sword Saints of Wandering</string>
     <string name="ce_name_the_chaldean">The Chaldean</string>
     <string name="ce_name_wings_of_manuscript">Wings of Manuscript</string>
+    <string name="p_should_use_teapots">Use Stargazer\'s Teapots</string>
+    <string name="p_should_use_teapots_summary">Automatically toggles Stargazer\'s Teapots (or Auto Item Use popup) for this battle config.</string>
+    <string name="p_limit_teapots">Limit Teapots</string>
 </resources>

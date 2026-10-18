@@ -95,5 +95,7 @@ enum class Images(val path: String) {
     BondCeEffectDefault("bond_ce_effect_default.png"),
     BondCeEffectNP("bond_ce_effect_np.png"),
     CommandSpell("command_spell.png"),
-    Cancel("cancel.png")
+    Cancel("cancel.png"),
+    TeapotsOff("teapots_off.png"),
+    TeapotsOn("teapots_on.png")
 }

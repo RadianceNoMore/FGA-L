@@ -313,6 +313,10 @@ private fun BattleConfigContent(
                 item {
                     ShuffleCardsGroup(config)
                 }
+
+                item {
+                    TeapotsGroup(config)
+                }
             }
         }
     }

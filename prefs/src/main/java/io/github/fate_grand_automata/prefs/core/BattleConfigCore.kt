@@ -196,4 +196,7 @@ class BattleConfigCore(
     val addRaidTurnDelay = maker.bool("add_raid_delay")
 
     val raidTurnDelaySeconds = maker.stringAsInt("raid_delay_seconds", 3)
+
+    val shouldUseTeapots = maker.bool("should_use_teapots")
+    val limitTeapots = maker.int("limit_teapots", 0)
 }
