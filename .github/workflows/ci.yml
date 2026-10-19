@@ -1,23 +1,7 @@
 name: CI
 
+# Play Store deployment disabled for fork repository
 on:
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - '.idea/**'
-      - '.github/**'
-      - '.gitattributes'
-      - '.gitignore'
-      - '*.md'
-      - 'LICENSE'
-      - 'renovate.json'
-      - 'custom-game-area/**'
-      - 'FUNDING.yml'
-      - 'wiki/**'
-      - 'docs/**'
-      - '.claude/**'
-      - '**/AGENTS.md'
   workflow_dispatch:
 
 concurrency:
@@ -36,7 +20,7 @@ env:
 jobs:
   play_store:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: false
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
