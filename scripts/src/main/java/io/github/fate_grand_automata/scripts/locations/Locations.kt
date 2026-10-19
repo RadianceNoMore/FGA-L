@@ -33,6 +33,11 @@ class Locations @Inject constructor(
     val interludeCloseClick = Location(-399, 1125).xFromCenter()
     val interludeEndScreenClose = Region(-515, 1080, 230, 90).xFromCenter()
 
+    // Quest start confirmation dialog ("Would you like to start the quest?")
+    // Appears for quests where party is formed immediately before the battle (e.g. some Interludes)
+    val questStartConfirmDialogRegion = Region(-310, 880, 310, 160).xFromCenter()
+    val questStartConfirmStartClick = Location(190, 960).xFromCenter()
+
     val teapotDialogRegion = Region(-130, 1000, 260, 450).xFromCenter()
     val teapotDialogToggleRegion = Region(305, 770, 72, 70).xFromCenter()
     val teapotParty1ToggleRegion = Region(55, 930, 72, 70).xFromCenter()

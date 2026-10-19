@@ -199,6 +199,7 @@ class AutoBattle @Inject constructor(
             { isRepeatScreen() } to { repeatQuest() },
             { isInOrdealCallOutOfPodsScreen() } to { ordealCallOutOfPods() },
             { isInInterludeEndScreen() } to { locations.interludeCloseClick.click() },
+            { isInQuestStartConfirmDialog() } to { locations.questStartConfirmStartClick.click() },
             { withdraw.needsToWithdraw() } to { withdraw.withdraw() },
             { needsToStorySkip() } to { skipStory() },
             { isFriendRequestScreen() } to { skipFriendRequestScreen() },
@@ -414,6 +415,14 @@ class AutoBattle @Inject constructor(
 
     private fun isInInterludeEndScreen() =
         findImage(locations.interludeEndScreenClose, Images.Close)
+
+    /**
+     * Checks if the "Would you like to start the quest?" confirmation dialog is visible.
+     * This dialog appears for quests where party formation happens immediately before battle
+     * (e.g. some Interludes). It has Cancel (left) and Start (right) buttons.
+     */
+    private fun isInQuestStartConfirmDialog() =
+        images[Images.Cancel] in locations.questStartConfirmDialogRegion
 
     /**
      * Checks if FGO is on the quest reward screen for Mana Prisms, SQ, ...
