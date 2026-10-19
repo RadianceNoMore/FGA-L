@@ -184,9 +184,10 @@ fun FgaApp(
                                     BattleConfigDestination.PreferredSupport ->
                                         backStack.add(Route.PreferredSupport(id))
 
-                                    BattleConfigDestination.SkillMaker -> {
+                                    is BattleConfigDestination.SkillMaker -> {
                                         val intent = Intent(context, SkillMakerActivity::class.java).apply {
                                             putExtra(Route.BattleConfig.idArg, id)
+                                            putExtra(Route.BattleConfig.isForcedSupportArg, it.isForcedSupport)
                                         }
 
                                         context.startActivity(intent)

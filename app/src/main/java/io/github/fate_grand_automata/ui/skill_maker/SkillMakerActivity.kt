@@ -33,13 +33,14 @@ class SkillMakerActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val configId = intent.getStringExtra(Route.BattleConfig.idArg)!!
+        val isForcedSupport = intent.getBooleanExtra(Route.BattleConfig.isForcedSupportArg, false)
 
         setContent {
             FgaScreen {
                 PreventRtl {
                     SkillMakerUI(
                         vm = hiltViewModel<SkillMakerViewModel, SkillMakerViewModel.Factory>(
-                            creationCallback = { it.create(configId) }
+                            creationCallback = { it.create(configId, isForcedSupport) }
                         ),
                         exit = { finish() }
                     )
@@ -120,7 +121,7 @@ fun SkillMakerUI(
                     onSkillNoTarget = { vm.noTargetSkill(it) },
                     onClear = { clearConfirmDialog.show() },
                     onDone = {
-                        vm.battleConfig.skillCommand = vm.finish()
+                        vm.saveSkillCmd()
                         exit()
                     }
                 )

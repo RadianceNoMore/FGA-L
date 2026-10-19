@@ -87,7 +87,7 @@ fun BattleConfigScreen(
 }
 
 sealed class BattleConfigDestination {
-    object SkillMaker : BattleConfigDestination()
+    data class SkillMaker(val isForcedSupport: Boolean = false) : BattleConfigDestination()
     object CardPriority : BattleConfigDestination()
     object Spam : BattleConfigDestination()
     object PreferredSupport : BattleConfigDestination()
@@ -233,7 +233,7 @@ private fun BattleConfigContent(
                                 title = stringResource(R.string.p_battle_config_cmd),
                                 commandPref = config.skillCommand,
                                 parsedCommand = parsedCommandA,
-                                openSkillMaker = { navigate(BattleConfigDestination.SkillMaker) }
+                                openSkillMaker = { navigate(BattleConfigDestination.SkillMaker(isForcedSupport = false)) }
                             )
 
                             HorizontalDivider()
@@ -272,7 +272,7 @@ private fun BattleConfigContent(
                                     title = stringResource(R.string.p_battle_config_cmd_forced_support),
                                     commandPref = config.skillCommandForcedSupport,
                                     parsedCommand = parsedCommandB,
-                                    openSkillMaker = null
+                                    openSkillMaker = { navigate(BattleConfigDestination.SkillMaker(isForcedSupport = true)) }
                                 )
 
                                 HorizontalDivider()

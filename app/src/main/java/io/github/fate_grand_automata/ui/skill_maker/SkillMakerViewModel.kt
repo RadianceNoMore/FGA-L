@@ -20,13 +20,17 @@ import io.github.fate_grand_automata.scripts.prefs.IPreferences
 class SkillMakerViewModel @AssistedInject constructor(
     val prefs: IPreferences,
     val savedState: SavedStateHandle,
-    @Assisted id: String
+    @Assisted id: String,
+    @Assisted val isForcedSupport: Boolean
 ) : ViewModel() {
     val battleConfig = prefs.forBattleConfig(id)
 
     @AssistedFactory
     interface Factory {
-        fun create(id: String): SkillMakerViewModel
+        fun create(
+            id: String,
+            isForcedSupport: Boolean
+        ): SkillMakerViewModel
     }
 
     val navigation = mutableStateOf<SkillMakerNav>(SkillMakerNav.Main)
@@ -37,7 +41,11 @@ class SkillMakerViewModel @AssistedInject constructor(
     private val model: SkillMakerModel = if (state.skillString != null) {
         SkillMakerModel(state.skillString)
     } else {
-        val skillString = battleConfig.skillCommand
+        val skillString = if (isForcedSupport) {
+            battleConfig.skillCommandForcedSupport
+        } else {
+            battleConfig.skillCommand
+        }
         val m = try {
             SkillMakerModel(skillString)
         } catch (e: Exception) {
@@ -239,6 +247,15 @@ class SkillMakerViewModel @AssistedInject constructor(
         }
 
         return getSkillCmdString()
+    }
+
+    fun saveSkillCmd() {
+        val cmd = finish()
+        if (isForcedSupport) {
+            battleConfig.skillCommandForcedSupport = cmd
+        } else {
+            battleConfig.skillCommand = cmd
+        }
     }
 
     fun nextTurn(atk: AutoSkillAction.Atk) {

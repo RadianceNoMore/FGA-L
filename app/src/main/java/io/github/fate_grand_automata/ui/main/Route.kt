@@ -16,6 +16,7 @@ sealed interface Route : NavKey {
 
         companion object {
             const val idArg = "id"
+            const val isForcedSupportArg = "is_forced_support"
         }
     }
 
