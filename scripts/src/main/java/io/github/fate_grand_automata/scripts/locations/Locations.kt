@@ -35,8 +35,8 @@ class Locations @Inject constructor(
 
     // Quest start confirmation dialog ("Would you like to start the quest?")
     // Appears for quests where party is formed immediately before the battle (e.g. some Interludes)
-    val questStartConfirmDialogRegion = Region(-310, 880, 310, 160).xFromCenter()
-    val questStartConfirmStartClick = Location(190, 960).xFromCenter()
+    val questStartConfirmDialogRegion = Region(-250, 1040, 180, 180).xFromCenter()
+    val questStartConfirmStartClick = Location(370, 1120).xFromCenter()
 
     val teapotDialogRegion = Region(-130, 1000, 260, 450).xFromCenter()
     val teapotDialogToggleRegion = Region(305, 770, 72, 70).xFromCenter()

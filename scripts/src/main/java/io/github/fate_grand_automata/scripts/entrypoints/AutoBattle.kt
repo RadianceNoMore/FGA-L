@@ -189,6 +189,7 @@ class AutoBattle @Inject constructor(
                 isInBattle = true
                 battle.performBattle()
             },
+            { isInQuestStartConfirmDialog() } to { locations.questStartConfirmStartClick.click() },
             { isInMenu() } to { menu() },
             { isStartingNp() } to { skipNp() },
             { isInBondScreen() } to { handleBondScreen() },
@@ -199,7 +200,6 @@ class AutoBattle @Inject constructor(
             { isRepeatScreen() } to { repeatQuest() },
             { isInOrdealCallOutOfPodsScreen() } to { ordealCallOutOfPods() },
             { isInInterludeEndScreen() } to { locations.interludeCloseClick.click() },
-            { isInQuestStartConfirmDialog() } to { locations.questStartConfirmStartClick.click() },
             { withdraw.needsToWithdraw() } to { withdraw.withdraw() },
             { needsToStorySkip() } to { skipStory() },
             { isFriendRequestScreen() } to { skipFriendRequestScreen() },
@@ -603,17 +603,20 @@ class AutoBattle @Inject constructor(
         var closeScreen = false
         var inventoryFull = false
         var confirmPodUsage = false
+        var startConfirm = false
 
         useSameSnapIn {
             closeScreen = isInOrdealCallOutOfPodsScreen()
             inventoryFull = isInventoryFull()
             confirmPodUsage = isInOrdealCallConfirmPodUseScreen()
+            startConfirm = isInQuestStartConfirmDialog()
         }
 
         when {
             closeScreen -> throw BattleExitException(ExitReason.LimitRuns(state.runs))
             inventoryFull -> throw BattleExitException(ExitReason.InventoryFull)
             confirmPodUsage -> locations.ordealCallConfirmPodUseRegion.center.click()
+            startConfirm -> locations.questStartConfirmStartClick.click()
         }
 
         refill.refill()
