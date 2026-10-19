@@ -140,6 +140,9 @@ class BattleConfigCore(
     )
 
     val party = maker.stringAsInt("autoskill_party", -1)
+    val useForcedSupportPath = maker.bool("use_forced_support_path", false)
+    val partyForcedSupport = maker.stringAsInt("autoskill_party_forced_support", -1)
+    val skillCommandForcedSupport = maker.string("autoskill_cmd_forced_support")
     val materials = maker.stringSet("battle_config_mat").map(
         defaultValue = emptySet(),
         convert = {

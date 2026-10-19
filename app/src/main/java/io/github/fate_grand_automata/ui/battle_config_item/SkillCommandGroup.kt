@@ -35,14 +35,16 @@ import io.github.fate_grand_automata.ui.prefs.remember
 import io.github.fate_grand_automata.ui.skill_maker.SkillMakerEntry
 import io.github.fate_grand_automata.ui.skill_maker.colorRes
 
+import io.github.fate_grand_automata.prefs.core.Pref
+
 @Composable
-fun SkillCommandGroup(
-    config: BattleConfigCore,
-    vm: BattleConfigScreenViewModel,
-    openSkillMaker: () -> Unit
+fun SkillCommandField(
+    title: String = stringResource(R.string.p_battle_config_cmd),
+    commandPref: Pref<String>,
+    parsedCommand: List<SkillMakerEntry>,
+    openSkillMaker: (() -> Unit)? = null
 ) {
-    var cmd by config.skillCommand.remember()
-    val parsedCommand by vm.skillCommand.collectAsState(listOf())
+    var cmd by commandPref.remember()
     var editing by remember { mutableStateOf(false) }
 
     val invalidCommandMessage = stringResource(R.string.battle_config_cmd_invalid)
@@ -52,7 +54,7 @@ fun SkillCommandGroup(
 
         Column {
             PreferenceTextEditor(
-                label = stringResource(R.string.p_battle_config_cmd),
+                label = title,
                 prefill = cmd,
                 onSubmit = {
                     try {
@@ -78,7 +80,7 @@ fun SkillCommandGroup(
         }
     } else {
         Preference(
-            title = { Text(stringResource(R.string.p_battle_config_cmd)) },
+            title = { Text(title) },
             summary = if (parsedCommand.isNotEmpty()) {
                 { SkillCommandSummary(parsedCommand) }
             } else {
@@ -89,7 +91,7 @@ fun SkillCommandGroup(
                     )
                 }
             },
-            onClick = openSkillMaker
+            onClick = openSkillMaker ?: { editing = true }
         ) {
             IconButton(
                 onClick = { editing = true }
@@ -101,6 +103,21 @@ fun SkillCommandGroup(
             }
         }
     }
+}
+
+@Composable
+fun SkillCommandGroup(
+    config: BattleConfigCore,
+    vm: BattleConfigScreenViewModel,
+    openSkillMaker: () -> Unit
+) {
+    val parsedCommand by vm.skillCommand.collectAsState(listOf())
+    SkillCommandField(
+        title = stringResource(R.string.p_battle_config_cmd),
+        commandPref = config.skillCommand,
+        parsedCommand = parsedCommand,
+        openSkillMaker = openSkillMaker
+    )
 }
 
 /*

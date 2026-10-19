@@ -74,4 +74,6 @@ class BattleState @Inject constructor() {
     fun nextStage() = runState.nextStage()
 
     fun nextRun() = ++runs
+
+    var isForcedSupport: Boolean = false
 }

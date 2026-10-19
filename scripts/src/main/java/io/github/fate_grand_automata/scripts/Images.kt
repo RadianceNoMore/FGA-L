@@ -97,5 +97,6 @@ enum class Images(val path: String) {
     CommandSpell("command_spell.png"),
     Cancel("cancel.png"),
     TeapotsOff("teapots_off.png"),
-    TeapotsOn("teapots_on.png")
+    TeapotsOn("teapots_on.png"),
+    FormationRestriction("formation_restriction.png")
 }

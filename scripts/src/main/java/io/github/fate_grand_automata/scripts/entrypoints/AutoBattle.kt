@@ -78,6 +78,7 @@ class AutoBattle @Inject constructor(
         data object Paused : ExitReason()
         data object StopAfterThisRun : ExitReason()
         data object OutOfCommandSpells: ExitReason()
+        data object FormationRestriction : ExitReason()
     }
 
     internal class BattleExitException(val reason: ExitReason) : Exception(reason.cause)
@@ -189,6 +190,7 @@ class AutoBattle @Inject constructor(
                 isInBattle = true
                 battle.performBattle()
             },
+            { isInFormationRestriction() } to { throw BattleExitException(ExitReason.FormationRestriction) },
             { isInQuestStartConfirmDialog() } to { locations.questStartConfirmStartClick.click() },
             { isInMenu() } to { menu() },
             { isStartingNp() } to { skipNp() },
@@ -227,6 +229,12 @@ class AutoBattle @Inject constructor(
     }
 
     /**
+     * Checks if the formation restriction badge ("編成条件あり") is present on the quest.
+     */
+    private fun isInFormationRestriction() =
+        images[Images.FormationRestriction] in locations.formationRestrictionRegion
+
+    /**
      *  Checks if in menu.png is on the screen, indicating that a quest can be chosen.
      */
     private fun isInMenu() = images[Images.Menu] in locations.menuScreenRegion
@@ -242,6 +250,10 @@ class AutoBattle @Inject constructor(
             // Ordeal Call
             isQuestClose = false
             throw BattleExitException(ExitReason.LimitRuns(state.runs))
+        }
+
+        if (isInFormationRestriction()) {
+            throw BattleExitException(ExitReason.FormationRestriction)
         }
 
         battle.resetState()
@@ -444,11 +456,50 @@ class AutoBattle @Inject constructor(
         locations.resultClick.click()
     }
 
+    /**
+     * Checks if the support screen has a forced support condition:
+     * - No scrollbar (top, moved, or bottom)
+     * - No friend or follow icons
+     * - Support list is loaded and not empty
+     */
+    private fun isForcedSupportScreen(): Boolean {
+        // Wait briefly for support list to appear
+        locations.support.confirmSetupButtonRegion.exists(
+            images[Images.SupportConfirmSetupButton],
+            similarity = Support.supportRegionToolSimilarity,
+            timeout = 5.seconds
+        )
+        0.5.seconds.wait()
+
+        val hasScrollbar = images[Images.SupportScrollBarTop] in locations.support.topScrollbarRegion ||
+                images[Images.SupportScrollBarMoved] in locations.support.topScrollbarRegion ||
+                images[Images.SupportScrollBarBottom] in locations.support.bottomScrollbarRegion
+
+        val hasFriend = images[Images.Friend] in locations.support.friendRegion ||
+                images[Images.Follow] in locations.support.friendRegion
+
+        val noSupports = findImage(locations.support.notFoundRegion, Images.SupportNotFound)
+
+        return !hasScrollbar && !hasFriend && !noSupports
+    }
+
     // Selections Support option
     private fun support() {
         canScreenshotBondCE = false
 
-        support.selectSupport()
+        val isForced = isForcedSupportScreen()
+        state.isForcedSupport = isForced
+
+        if (isForced) {
+            locations.support.firstSupportClick.click()
+            locations.support.screenCheckRegion.waitVanish(
+                images[Images.SupportScreen],
+                similarity = 0.85,
+                timeout = 10.seconds
+            )
+        } else {
+            support.selectSupport()
+        }
 
         if (!isContinuing) {
             4.seconds.wait()
@@ -604,8 +655,10 @@ class AutoBattle @Inject constructor(
         var inventoryFull = false
         var confirmPodUsage = false
         var startConfirm = false
+        var formationRestriction = false
 
         useSameSnapIn {
+            formationRestriction = isInFormationRestriction()
             closeScreen = isInOrdealCallOutOfPodsScreen()
             inventoryFull = isInventoryFull()
             confirmPodUsage = isInOrdealCallConfirmPodUseScreen()
@@ -613,6 +666,7 @@ class AutoBattle @Inject constructor(
         }
 
         when {
+            formationRestriction -> throw BattleExitException(ExitReason.FormationRestriction)
             closeScreen -> throw BattleExitException(ExitReason.LimitRuns(state.runs))
             inventoryFull -> throw BattleExitException(ExitReason.InventoryFull)
             confirmPodUsage -> locations.ordealCallConfirmPodUseRegion.center.click()

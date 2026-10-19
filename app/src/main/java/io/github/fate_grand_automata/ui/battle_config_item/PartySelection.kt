@@ -23,8 +23,53 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.fate_grand_automata.R
 import io.github.fate_grand_automata.prefs.core.BattleConfigCore
+import io.github.fate_grand_automata.prefs.core.Pref
 import io.github.fate_grand_automata.ui.dialog.FgaDialog
+import io.github.fate_grand_automata.ui.prefs.Preference
 import io.github.fate_grand_automata.ui.prefs.remember
+
+@Composable
+fun PartyPreference(
+    partyPref: Pref<Int>,
+    title: String = stringResource(R.string.p_battle_config_party)
+) {
+    var party by partyPref.remember()
+
+    val dialog = FgaDialog()
+
+    dialog.build(
+        color = MaterialTheme.colorScheme.background
+    ) {
+        title(title)
+
+        PartySelectionDialogContent(
+            selected = party,
+            onSelectedChange = {
+                party = it
+                dialog.hide()
+            }
+        )
+
+        buttons(
+            showCancel = false,
+            okLabel = stringResource(R.string.clear).uppercase(),
+            onSubmit = { party = -1 }
+        )
+    }
+
+    Preference(
+        title = { Text(title) },
+        summary = {
+            Text(
+                if (party == -1)
+                    stringResource(R.string.battle_config_party_default)
+                else (party + 1).toString(),
+                style = MaterialTheme.typography.bodySmall
+            )
+        },
+        onClick = { dialog.show() }
+    )
+}
 
 @Composable
 fun PartySelection(

@@ -18,6 +18,9 @@ interface IBattleConfig {
     val rearrangeCards: List<Boolean>
     val braveChains: List<BraveChainEnum>
     val party: Int
+    val useForcedSupportPath: Boolean
+    val partyForcedSupport: Int
+    var skillCommandForcedSupport: String
     val materials: Set<MaterialEnum>
     val support: ISupportPreferences
     val shuffleCards: ShuffleCardsEnum

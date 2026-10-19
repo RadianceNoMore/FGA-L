@@ -22,6 +22,9 @@ internal class BattleConfig(
     override val useServantPriority by prefs.useServantPriority
 
     override val party by prefs.party
+    override val useForcedSupportPath by prefs.useForcedSupportPath
+    override val partyForcedSupport by prefs.partyForcedSupport
+    override var skillCommandForcedSupport by prefs.skillCommandForcedSupport
     override val materials by prefs.materials
 
     override val shuffleCards by prefs.shuffleCards

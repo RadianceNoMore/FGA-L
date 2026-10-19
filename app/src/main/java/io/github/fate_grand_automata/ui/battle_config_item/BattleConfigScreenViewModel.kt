@@ -50,6 +50,19 @@ class BattleConfigScreenViewModel @AssistedInject constructor(
                     .drop(1)
             }
 
+    val skillCommandForcedSupport =
+        battleConfigCore.skillCommandForcedSupport
+            .asFlow()
+            .map {
+                try {
+                    SkillMakerModel(it)
+                } catch (e: Exception) {
+                    SkillMakerModel("")
+                }
+                    .skillCommand
+                    .drop(1)
+            }
+
     val maxSkillText =
         combine(
             battleConfigCore.support.skill1Max.asFlow(),

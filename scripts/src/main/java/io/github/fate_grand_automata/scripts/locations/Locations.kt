@@ -55,6 +55,12 @@ class Locations @Inject constructor(
         else Location(-270, 440))
             .xFromRight()
 
+    val formationRestrictionRegion =
+        (if (isWide)
+            Region(-1470, 460, 240, 60)
+        else Region(-1280, 460, 240, 60))
+            .xFromRight()
+
     val menuStartQuestClick =
         (if (isWide)
             Location(-350, -160)

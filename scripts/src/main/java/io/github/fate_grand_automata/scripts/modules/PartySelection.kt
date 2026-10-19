@@ -3,6 +3,7 @@ package io.github.fate_grand_automata.scripts.modules
 import io.github.fate_grand_automata.scripts.IFgoAutomataApi
 import io.github.fate_grand_automata.scripts.Images
 import io.github.fate_grand_automata.scripts.ScriptLog
+import io.github.fate_grand_automata.scripts.models.battle.BattleState
 import io.github.fate_grand_automata.scripts.prefs.IBattleConfig
 import io.github.lib_automata.dagger.ScriptScope
 import javax.inject.Inject
@@ -12,9 +13,10 @@ import kotlin.time.Duration.Companion.seconds
 @ScriptScope
 class PartySelection @Inject constructor(
     api: IFgoAutomataApi,
-    private val battleConfig: IBattleConfig
+    private val battleConfig: IBattleConfig,
+    private val state: BattleState
 ) : IFgoAutomataApi by api {
-    private var partySelected = false
+    private var lastSelectedParty: Int? = null
 
     /**
      * Selects the party for the quest based on the AutoSkill configuration.
@@ -27,9 +29,13 @@ class PartySelection @Inject constructor(
      * changed to the configured one by clicking on the little dots above the party names.
      */
     fun selectParty() {
-        val party = battleConfig.party
+        val party = if (state.isForcedSupport && battleConfig.useForcedSupportPath && battleConfig.partyForcedSupport in locations.partySelectionArray.indices) {
+            battleConfig.partyForcedSupport
+        } else {
+            battleConfig.party
+        }
 
-        if (!partySelected && party in locations.partySelectionArray.indices) {
+        if (lastSelectedParty != party && party in locations.partySelectionArray.indices) {
             val currentParty = locations.selectedPartyRegion
                 .find(images[Images.SelectedParty])
                 ?.let { match ->
@@ -61,8 +67,8 @@ class PartySelection @Inject constructor(
             }
 
             /* If we select the party once, the same party will be used by the game for next fight.
-               So, we don't have to select it again. */
-            partySelected = true
+               So, we don't have to select it again unless the target party changes. */
+            lastSelectedParty = party
         }
     }
 }

@@ -4,6 +4,8 @@ import io.github.fate_grand_automata.scripts.IFgoAutomataApi
 import io.github.fate_grand_automata.scripts.models.AutoSkillAction
 import io.github.fate_grand_automata.scripts.models.AutoSkillCommand
 import io.github.fate_grand_automata.scripts.models.NPUsage
+import io.github.fate_grand_automata.scripts.models.battle.BattleState
+import io.github.fate_grand_automata.scripts.prefs.IBattleConfig
 import io.github.lib_automata.dagger.ScriptScope
 import javax.inject.Inject
 
@@ -11,8 +13,26 @@ import javax.inject.Inject
 class AutoSkill @Inject constructor(
     api: IFgoAutomataApi,
     private val skillCommand: AutoSkillCommand,
+    private val battleConfig: IBattleConfig,
+    private val state: BattleState,
     private val caster: Caster
 ) : IFgoAutomataApi by api {
+    private val forcedSkillCommand: AutoSkillCommand? by lazy {
+        if (battleConfig.skillCommandForcedSupport.isNotBlank()) {
+            try {
+                AutoSkillCommand.parse(battleConfig.skillCommandForcedSupport)
+            } catch (e: Exception) {
+                null
+            }
+        } else null
+    }
+
+    private val activeSkillCommand: AutoSkillCommand
+        get() = if (state.isForcedSupport && battleConfig.useForcedSupportPath && forcedSkillCommand != null) {
+            forcedSkillCommand!!
+        } else {
+            skillCommand
+        }
     private fun act(action: AutoSkillAction) = when (action) {
         is AutoSkillAction.Atk -> {}
         is AutoSkillAction.ServantSkill -> caster.castServantSkill(action.skill, action.targets)
@@ -23,7 +43,7 @@ class AutoSkill @Inject constructor(
     }
 
     fun execute(stage: Int, turn: Int): NPUsage {
-        val commandList = skillCommand[stage, turn]
+        val commandList = activeSkillCommand[stage, turn]
         var npUsage = NPUsage.none
 
         if (commandList.isNotEmpty()) {

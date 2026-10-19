@@ -55,6 +55,7 @@ import io.github.fate_grand_automata.ui.card_priority.getColorRes
 import io.github.fate_grand_automata.ui.dialog.FgaDialog
 import io.github.fate_grand_automata.ui.prefs.EditTextPreference
 import io.github.fate_grand_automata.ui.prefs.Preference
+import io.github.fate_grand_automata.ui.prefs.SwitchPreference
 import io.github.fate_grand_automata.ui.prefs.remember
 import io.github.fate_grand_automata.util.toSp
 
@@ -213,6 +214,7 @@ private fun BattleConfigContent(
                     }
                 }
 
+                // Path A (Normal)
                 item {
                     Card(
                         modifier = Modifier
@@ -223,11 +225,64 @@ private fun BattleConfigContent(
                             contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     ) {
-                        SkillCommandGroup(
-                            config = config,
-                            vm = vm,
-                            openSkillMaker = { navigate(BattleConfigDestination.SkillMaker) }
+                        Column {
+                            Heading(stringResource(R.string.path_a_normal))
+
+                            val parsedCommandA by vm.skillCommand.collectAsState(listOf())
+                            SkillCommandField(
+                                title = stringResource(R.string.p_battle_config_cmd),
+                                commandPref = config.skillCommand,
+                                parsedCommand = parsedCommandA,
+                                openSkillMaker = { navigate(BattleConfigDestination.SkillMaker) }
+                            )
+
+                            HorizontalDivider()
+
+                            PartyPreference(
+                                partyPref = config.party,
+                                title = stringResource(R.string.p_battle_config_party)
+                            )
+                        }
+                    }
+                }
+
+                // Path B (Forced Support)
+                item {
+                    Card(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                    ) {
+                        Column {
+                            config.useForcedSupportPath.SwitchPreference(
+                                title = stringResource(R.string.p_use_forced_support_path),
+                                summary = stringResource(R.string.p_use_forced_support_path_summary)
+                            )
+
+                            val useForcedSupport by config.useForcedSupportPath.remember()
+                            if (useForcedSupport) {
+                                HorizontalDivider()
+
+                                val parsedCommandB by vm.skillCommandForcedSupport.collectAsState(listOf())
+                                SkillCommandField(
+                                    title = stringResource(R.string.p_battle_config_cmd_forced_support),
+                                    commandPref = config.skillCommandForcedSupport,
+                                    parsedCommand = parsedCommandB,
+                                    openSkillMaker = null
+                                )
+
+                                HorizontalDivider()
+
+                                PartyPreference(
+                                    partyPref = config.partyForcedSupport,
+                                    title = stringResource(R.string.p_battle_config_party_forced_support)
+                                )
+                            }
+                        }
                     }
                 }
 
