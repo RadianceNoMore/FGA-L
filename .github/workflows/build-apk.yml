@@ -29,10 +29,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5.1.0
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v5.7.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRO }}
@@ -45,7 +45,7 @@ jobs:
         run: ./gradlew assembleCi --parallel --no-daemon
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: FGA-ci-build-${{ github.run_number }}
           path: app/build/outputs/apk/ci/app-ci.apk
