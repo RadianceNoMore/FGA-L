@@ -24,4 +24,7 @@ interface ISupportPreferences {
     val grandServant: Boolean
     val bondCEEffect: BondCEEffectEnum
     val requireBothNormalAndRewardMatch: Boolean
+
+    /** Send a friend request instead of rejecting the friend request dialog that can follow a battle. */
+    val autoSendFriendRequest: Boolean
 }

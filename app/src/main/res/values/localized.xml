@@ -114,6 +114,8 @@ Skills"</string>
     <string name="p_battle_config_support_friends_only">"Friends Only"</string>
     <string name="p_battle_config_support_friend_name_hint">"Friend name images can be added using 'Support Image Maker' script"</string>
     <string name="p_battle_config_support_also_check_all">"Also check All"</string>
+    <string name="p_battle_config_support_auto_send_friend_request">"Auto Send Friend Request"</string>
+    <string name="p_battle_config_support_auto_send_friend_request_summary">"Send the friend request instead of rejecting it when it appears after a battle (appears when a non-friend support was used). Rejections stay silent like before."</string>
     <string name="p_max_skills">"Max Skills"</string>
     <string name="p_game_server">"Game Server"</string>
     <string name="p_game_server_auto_detect">"Auto-detect"</string>

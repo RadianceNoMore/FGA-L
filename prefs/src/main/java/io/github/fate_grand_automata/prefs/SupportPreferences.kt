@@ -37,4 +37,5 @@ internal class SupportPreferences(
     override val grandServant by prefs.grandServant
     override val bondCEEffect by prefs.bondCEEffect
     override val requireBothNormalAndRewardMatch by prefs.requireBothNormalAndRewardMatch
+    override val autoSendFriendRequest by prefs.autoSendFriendRequest
 }

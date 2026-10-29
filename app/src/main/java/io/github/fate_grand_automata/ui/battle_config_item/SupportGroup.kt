@@ -99,6 +99,11 @@ fun SupportGroup(
 
             val preferredMode = supportMode == SupportSelectionModeEnum.Preferred
 
+            config.autoSendFriendRequest.SwitchPreference(
+                title = stringResource(R.string.p_battle_config_support_auto_send_friend_request),
+                summary = stringResource(R.string.p_battle_config_support_auto_send_friend_request_summary)
+            )
+
             Row {
                 config.selectionMode.DropdownPreference(
                     title = stringResource(R.string.p_battle_config_support_selection_mode),

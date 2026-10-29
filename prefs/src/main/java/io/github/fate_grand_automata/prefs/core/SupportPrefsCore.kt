@@ -42,4 +42,5 @@ class SupportPrefsCore(
         BondCEEffectEnum.Ignore
     )
     val requireBothNormalAndRewardMatch = maker.bool("support_require_both_normal_and_reward_match")
+    val autoSendFriendRequest = maker.bool("auto_accept_friend_request")
 }

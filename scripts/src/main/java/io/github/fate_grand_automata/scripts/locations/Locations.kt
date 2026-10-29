@@ -116,6 +116,9 @@ class Locations @Inject constructor(
 
     val resultFriendRequestRegion = Region(600, 150, 100, 94).xFromCenter()
     val resultFriendRequestRejectClick = Location(-680, 1200).xFromCenter()
+
+    // Send button of the friend request dialog, mirrored across the center of the reject button.
+    val resultFriendRequestSendClick = Location(680, 1200).xFromCenter()
     val resultMatRewardsRegion = Region(800, 1220, 280, 130).xFromCenter()
     val resultClick = Location(320, 1350).xFromCenter()
     val resultQuestRewardRegion = Region(350, 140, 370, 250).xFromCenter()

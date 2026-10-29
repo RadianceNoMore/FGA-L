@@ -204,7 +204,7 @@ class AutoBattle @Inject constructor(
             { isInInterludeEndScreen() } to { locations.interludeCloseClick.click() },
             { withdraw.needsToWithdraw() } to { withdraw.withdraw() },
             { needsToStorySkip() } to { skipStory() },
-            { isFriendRequestScreen() } to { skipFriendRequestScreen() },
+            { isFriendRequestScreen() } to { handleFriendRequestScreen() },
             { isBond10CEReward() } to { bond10CEReward() },
             { isCeRewardDetails() } to { ceRewardDetails() },
             { isDeathAnimation() } to { locations.battle.battleSafeMiddleOfScreenClick.click() },
@@ -420,6 +420,15 @@ class AutoBattle @Inject constructor(
     private fun isFriendRequestScreen() =
         images[Images.SupportExtra] in locations.resultFriendRequestRegion
 
+    private fun handleFriendRequestScreen() {
+        // Friend request dialogue. Appears when non-friend support was selected this battle. By default the game does not send the request.
+        if (prefs.selectedBattleConfig.support.autoSendFriendRequest) {
+            locations.resultFriendRequestSendClick.click()
+        } else {
+            skipFriendRequestScreen()
+        }
+    }
+
     private fun skipFriendRequestScreen() {
         // Friend request dialogue. Appears when non-friend support was selected this battle. Ofc it's defaulted not sending request.
         locations.resultFriendRequestRejectClick.click()
@@ -487,7 +496,9 @@ class AutoBattle @Inject constructor(
     private fun support() {
         canScreenshotBondCE = false
 
-        val isForced = isForcedSupportScreen()
+        // Path B (picking the first support on a forced support screen) only applies
+        // when explicitly enabled in the battle config; otherwise take the normal path.
+        val isForced = prefs.selectedBattleConfig.useForcedSupportPath && isForcedSupportScreen()
         state.isForcedSupport = isForced
 
         if (isForced) {
